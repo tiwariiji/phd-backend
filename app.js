@@ -3,45 +3,42 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 
-const authMiddleware = require("./middlewares/authMiddleware");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-// routes
-const auth = require("./routes/authRoute/authRoute");
-const form = require("./routes/formRoute/formRoute");
+const auth = require("../routes/authRoute/authRoute");
+const form = require("../routes/formRoute/formRoute");
 
-// const adminRouter = require("./routes/adminRoute.js");
-// const paymentRouter = require("./routes/paymentRoute.js");
-const connectDB = require("./config/connectDB.js");
-// const rzpPaymentRouter = require("./routes/rzpPaymentRoute.js");
-//const connectCloudinary = require("./config/cloudinary.js");
+const connectDB = require("../config/connectDB.js");
 const cors = require("cors");
 
-//config
+// Connect DB (important)
 connectDB();
-//connectCloudinary();
 
-//middlewares
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://your-frontend.vercel.app"
+];
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-//endpoints
+// Routes
 app.use("/api/auth", auth);
 app.use("/api/form", authMiddleware, form);
-// app.use("/api/admin", adminRouter);
-// app.use("/api/payment", paymentRouter);
-// app.use("/api/payment", rzpPaymentRouter);
-// Debug log
 
-app.use("/", (req, res) => {
-  res.send("API is Working");
+// Default Route
+app.get("/", (req, res) => {
+  res.send("Backend API is Live 🚀");
 });
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT} | http://localhost:${PORT}`);
-});
+
+// ❗ IMPORTANT: No app.listen
+
+module.exports = app;
