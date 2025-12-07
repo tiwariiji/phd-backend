@@ -34,3 +34,4 @@ coverage/
 
 # Ignore custom debug files
 debug.log
+.vercel
